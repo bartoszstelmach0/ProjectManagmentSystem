@@ -36,4 +36,6 @@ public class Project {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
     private List<Task> tasks;
+
+    //test something
 }
