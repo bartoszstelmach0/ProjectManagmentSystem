@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Pamietaj, aby  na 'master' dać
+            
                 checkout([$class: 'GitSCM',
                           userRemoteConfigs: [[
                                                       url: 'https://github.com/bartoszstelmach0/ProjectManagmentSystem.git',
