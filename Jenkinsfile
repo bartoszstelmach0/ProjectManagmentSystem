@@ -6,9 +6,9 @@ pipeline {
             steps {
                 checkout([$class: 'GitSCM',
                           userRemoteConfigs: [[
-                                                      url: 'https://github.com/bartoszstelmach0/ProjectManagmentSystem.git',
-                                                      credentialsId: 'projectManagment-github-token'
-                                              ]]
+                              url: 'https://github.com/bartoszstelmach0/ProjectManagmentSystem.git',
+                              credentialsId: 'projectManagment-github-token'
+                          ]]
                 ])
             }
         }
