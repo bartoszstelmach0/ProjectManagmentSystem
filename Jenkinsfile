@@ -4,12 +4,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-            
                 checkout([$class: 'GitSCM',
                           userRemoteConfigs: [[
-                                                      url: 'https://github.com/bartoszstelmach0/ProjectManagmentSystem.git',
-                                                      credentialsId: 'projectManagment-github-token'
-                                              ]]
+                              url: 'https://github.com/bartoszstelmach0/ProjectManagmentSystem.git',
+                              credentialsId: 'projectManagment-github-token'
+                          ]]
                 ])
             }
         }
@@ -23,22 +22,24 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh './mvnw test'
+                sh './mvnw test -X'  // tryb debugowania
+                sh 'ls -la target/surefire-reports'
+                sh 'cat target/surefire-reports/TEST-*.xml'
             }
 
             post {
                 always {
-                    junit '**/target/surefire-reports/TEST-*.xml'
+                    junit '**/target/surefire-reports/*.xml'
                 }
             }
         }
 
-        stage('Publish'){
-            steps{
+        stage('Publish') {
+            steps {
                 sh './mvnw package'
             }
-            post{
-                success{
+            post {
+                success {
                     archiveArtifacts 'target/*.jar'
                 }
             }
