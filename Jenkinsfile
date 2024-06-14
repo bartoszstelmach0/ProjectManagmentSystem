@@ -22,7 +22,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh './mvnw test -X'  //  tryb debugowania
+                sh './mvnw test -X'  // tryb debugowania
                 sh 'ls -la target/surefire-reports'
                 sh 'cat target/surefire-reports/TEST-*.xml'
             }
