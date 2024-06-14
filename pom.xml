@@ -123,10 +123,17 @@
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
+					<testFailureIgnore>false</testFailureIgnore>
+					<reportFormat>brief</reportFormat>
+					<printSummary>true</printSummary>
+					<useFile>false</useFile>
+					<disableXmlReport>false</disableXmlReport>
+					<trimStackTrace>true</trimStackTrace>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
 
 
 </project>
