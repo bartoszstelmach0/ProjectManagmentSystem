@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Pamietaj, aby zmienić 'main' na 'master'
                 checkout([$class: 'GitSCM',
                           userRemoteConfigs: [[
                                                       url: 'https://github.com/bartoszstelmach0/ProjectManagmentSystem.git',
@@ -23,22 +22,24 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh './mvnw test'
+                sh './mvnw test -X'  //  tryb debugowania
+                sh 'ls -la target/surefire-reports'
+                sh 'cat target/surefire-reports/TEST-*.xml'
             }
 
             post {
                 always {
-                    junit '**/target/surefire-reports/TEST-*.xml'
+                    junit '**/target/surefire-reports/*.xml'
                 }
             }
         }
 
-        stage('Publish'){
-            steps{
+        stage('Publish') {
+            steps {
                 sh './mvnw package'
             }
-            post{
-                success{
+            post {
+                success {
                     archiveArtifacts 'target/*.jar'
                 }
             }
