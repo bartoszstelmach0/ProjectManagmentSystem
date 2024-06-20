@@ -153,12 +153,10 @@ class ProjectServiceTest {
         Long id = 1L;
         Project existingProject = new Project();
         ProjectDTO projectDTO = new ProjectDTO();
-        Project projectToUpdate = new Project();
         Project updatedProject = new Project();
         ProjectDTO updatedProjectDTO = new ProjectDTO();
         Mockito.when(projectRepository.findById(id)).thenReturn(Optional.of(existingProject));
-        Mockito.when(mapper.map(projectDTO)).thenReturn(projectToUpdate);
-        Mockito.when(projectRepository.save(projectToUpdate)).thenReturn(updatedProject);
+        Mockito.when(projectRepository.save(existingProject)).thenReturn(updatedProject);
         Mockito.when(mapper.map(updatedProject)).thenReturn(updatedProjectDTO);
         //when
         Optional<ProjectDTO> result = projectService.updateProject(id, projectDTO);
@@ -167,8 +165,7 @@ class ProjectServiceTest {
         assertEquals(updatedProjectDTO,result.get());
 
         Mockito.verify(projectRepository).findById(id);
-        Mockito.verify(mapper).map(projectDTO);
-        Mockito.verify(projectRepository).save(projectToUpdate);
+        Mockito.verify(projectRepository).save(existingProject);
         Mockito.verify(mapper).map(updatedProject);
     }
 

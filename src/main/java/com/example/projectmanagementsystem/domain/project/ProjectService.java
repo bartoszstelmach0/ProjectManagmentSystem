@@ -49,9 +49,19 @@ public class ProjectService {
         }
        return projectRepository.findById(id)
                .map(existingProject -> {
-                   Project project = mapper.map(projectDTO);
-                   project.setId(existingProject.getId());
-                   Project updatedProject = projectRepository.save(project);
+                   if (projectDTO.getName() != null) {
+                       existingProject.setName(projectDTO.getName());
+                   }
+                   if (projectDTO.getDescription() != null) {
+                       existingProject.setDescription(projectDTO.getDescription());
+                   }
+                   if (projectDTO.getStartDate() != null) {
+                       existingProject.setStartDate(projectDTO.getStartDate());
+                   }
+                   if (projectDTO.getEndDate() != null) {
+                       existingProject.setEndDate(projectDTO.getEndDate());
+                   }
+                   Project updatedProject = projectRepository.save(existingProject);
                    return mapper.map(updatedProject);
                });
     }
