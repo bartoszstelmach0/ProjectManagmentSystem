@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,5 +28,5 @@ public class ProjectDTO {
     @NotNull
     @Future
     private LocalDateTime endDate;
-    private List<TaskDto> tasks;
+    private List<TaskDto> tasks = new ArrayList<>();
 }
