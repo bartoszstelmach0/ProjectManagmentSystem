@@ -1,10 +1,10 @@
 package com.example.projectmanagementsystem.domain.project;
 
+import com.example.projectmanagementsystem.domain.User.User;
+import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.dto.ProjectDTO;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -15,10 +15,12 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectDtoMapper mapper;
+    private final UserRepository userRepository;
 
-    public ProjectService(ProjectRepository projectRepository, ProjectDtoMapper mapper) {
+    public ProjectService(ProjectRepository projectRepository, ProjectDtoMapper mapper, UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.mapper = mapper;
+        this.userRepository = userRepository;
     }
 
     public List<ProjectDTO> getAllProjects(){
@@ -38,7 +40,11 @@ public class ProjectService {
         if (projectDTO == null){
             throw  new IllegalArgumentException("ProjectDto cannot be null!");
         }
+        User user = userRepository.findById(projectDTO.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID " + projectDTO.getUserId()));
+
         Project project = mapper.map(projectDTO);
+        project.setUser(user);
         Project savedProject = projectRepository.save(project);
         return mapper.map(savedProject);
     }
@@ -61,6 +67,8 @@ public class ProjectService {
                    if (projectDTO.getEndDate() != null) {
                        existingProject.setEndDate(projectDTO.getEndDate());
                    }
+                   existingProject.setUser(userRepository.findById(projectDTO.getUserId())
+                           .orElseThrow(() -> new RuntimeException("User not found with id " +projectDTO.getUserId())));
                    Project updatedProject = projectRepository.save(existingProject);
                    return mapper.map(updatedProject);
                });

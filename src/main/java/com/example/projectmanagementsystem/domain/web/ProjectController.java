@@ -1,5 +1,7 @@
 package com.example.projectmanagementsystem.domain.web;
 
+import com.example.projectmanagementsystem.domain.User.User;
+import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.ProjectService;
 import com.example.projectmanagementsystem.domain.project.dto.ProjectDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,16 +11,15 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/project")
@@ -26,10 +27,12 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
-    public ProjectController(ProjectService projectService, ObjectMapper objectMapper) {
+    public ProjectController(ProjectService projectService, ObjectMapper objectMapper, UserRepository userRepository) {
         this.projectService = projectService;
         this.objectMapper = objectMapper;
+        this.userRepository = userRepository;
     }
 
 
@@ -48,11 +51,15 @@ public class ProjectController {
 
     @PostMapping
     public ResponseEntity<ProjectDTO> createProject (@RequestBody @Valid ProjectDTO projectDTO){
-        ProjectDTO savedProject = projectService.createNewProject(projectDTO);
-        URI savedProjectUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(savedProject.getId())
-                .toUri();
-        return ResponseEntity.created(savedProjectUri).body(savedProject);
+        try{
+            ProjectDTO savedProject = projectService.createNewProject(projectDTO);
+            URI savedProjectUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(savedProject.getId())
+                    .toUri();
+            return ResponseEntity.created(savedProjectUri).body(savedProject);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PatchMapping("/{id}")

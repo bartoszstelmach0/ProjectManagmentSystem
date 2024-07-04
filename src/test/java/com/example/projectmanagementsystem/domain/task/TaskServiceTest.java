@@ -1,5 +1,9 @@
 package com.example.projectmanagementsystem.domain.task;
 
+import com.example.projectmanagementsystem.domain.User.User;
+import com.example.projectmanagementsystem.domain.User.UserRepository;
+import com.example.projectmanagementsystem.domain.project.Project;
+import com.example.projectmanagementsystem.domain.project.ProjectRepository;
 import com.example.projectmanagementsystem.domain.task.dto.TaskDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +25,17 @@ class TaskServiceTest {
 
     @Mock
     TaskDtoMapper mapper;
+    @Mock
+    ProjectRepository projectRepository;
+    @Mock
+    UserRepository userRepository;
 
     private TaskService taskService;
 
     @BeforeEach
     public void init (){
         MockitoAnnotations.openMocks(this);
-        taskService = new TaskService(taskRepository,mapper);
+        taskService = new TaskService(taskRepository,mapper, projectRepository, userRepository);
     }
 
     @Test
@@ -169,7 +177,11 @@ class TaskServiceTest {
         Task taskToSave = new Task();
         Task savedTask = new Task();
         TaskDto savedTaskDto = new TaskDto();
+        Project project = new Project();
+        User user = new User();
 
+        Mockito.when(userRepository.findById(taskDto.getUserId())).thenReturn(Optional.of(user));
+        Mockito.when(projectRepository.findById(taskDto.getProjectId())).thenReturn(Optional.of(project));
         Mockito.when(mapper.map(taskDto)).thenReturn(taskToSave);
         Mockito.when(taskRepository.save(taskToSave)).thenReturn(savedTask);
         Mockito.when(mapper.map(savedTask)).thenReturn(savedTaskDto);

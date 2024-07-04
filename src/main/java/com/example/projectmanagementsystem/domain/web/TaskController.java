@@ -59,12 +59,16 @@ public class TaskController {
 
     @PostMapping
     ResponseEntity<TaskDto> createTask (@RequestBody @Valid TaskDto taskDto){
-        TaskDto task = taskService.createTask(taskDto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(task.getId())
-                .toUri();
-        return  ResponseEntity.created(uri).body(task);
+        try{
+            TaskDto task = taskService.createTask(taskDto);
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(task.getId())
+                    .toUri();
+            return  ResponseEntity.created(uri).body(task);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PatchMapping("/{id}")
@@ -89,7 +93,11 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteTaskById(@PathVariable Long id){
-        taskService.deleteTask(id);
-        return ResponseEntity.noContent().build();
+        try{
+            taskService.deleteTask(id);
+            return ResponseEntity.noContent().build();
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
