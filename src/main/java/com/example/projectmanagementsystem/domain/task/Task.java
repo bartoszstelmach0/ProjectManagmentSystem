@@ -1,5 +1,6 @@
 package com.example.projectmanagementsystem.domain.task;
 
+import com.example.projectmanagementsystem.domain.User.User;
 import com.example.projectmanagementsystem.domain.project.Project;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
@@ -32,10 +33,13 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
-
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id",nullable = false,referencedColumnName = "id")
+    private User user;
 
     public enum TaskStatus{
         TO_DO,

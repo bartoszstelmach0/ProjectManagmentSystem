@@ -29,4 +29,5 @@ public class ProjectDTO {
     @Future
     private LocalDateTime endDate;
     private List<TaskDto> tasks = new ArrayList<>();
+    private Long userId;
 }

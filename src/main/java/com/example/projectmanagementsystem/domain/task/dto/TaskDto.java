@@ -23,7 +23,9 @@ public class TaskDto {
     @NotNull
     @Future
     private LocalDateTime deadline;
+    @NotNull
     private String status;
     private Long projectId;
+    private Long userId;
 
 }

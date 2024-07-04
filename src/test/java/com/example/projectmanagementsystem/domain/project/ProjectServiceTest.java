@@ -1,5 +1,7 @@
 package com.example.projectmanagementsystem.domain.project;
 
+import com.example.projectmanagementsystem.domain.User.User;
+import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.dto.ProjectDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +11,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +26,14 @@ class ProjectServiceTest {
     @Mock
     ProjectDtoMapper mapper;
 
+    @Mock
+    UserRepository userRepository;
     private ProjectService projectService;
 
     @BeforeEach
     public void init (){
         MockitoAnnotations.openMocks(this);
-        projectService = new ProjectService(projectRepository,mapper);
+        projectService = new ProjectService(projectRepository,mapper, userRepository);
     }
 
     @Test
@@ -112,7 +115,9 @@ class ProjectServiceTest {
         Project project = new Project();
         Project savedProject = new Project();
         ProjectDTO savedProjectDto = new ProjectDTO();
+        User user = new User();
 
+        Mockito.when(userRepository.findById(projectDTO.getUserId())).thenReturn(Optional.of(user));
         Mockito.when(mapper.map(projectDTO)).thenReturn(project);
         Mockito.when(projectRepository.save(project)).thenReturn(savedProject);
         Mockito.when(mapper.map(savedProject)).thenReturn(savedProjectDto);
@@ -155,6 +160,9 @@ class ProjectServiceTest {
         ProjectDTO projectDTO = new ProjectDTO();
         Project updatedProject = new Project();
         ProjectDTO updatedProjectDTO = new ProjectDTO();
+        User user = new User();
+
+        Mockito.when(userRepository.findById(projectDTO.getUserId())).thenReturn(Optional.of(user));
         Mockito.when(projectRepository.findById(id)).thenReturn(Optional.of(existingProject));
         Mockito.when(projectRepository.save(existingProject)).thenReturn(updatedProject);
         Mockito.when(mapper.map(updatedProject)).thenReturn(updatedProjectDTO);

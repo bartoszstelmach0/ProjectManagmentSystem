@@ -1,5 +1,6 @@
 package com.example.projectmanagementsystem.domain.project;
 
+import com.example.projectmanagementsystem.domain.User.User;
 import com.example.projectmanagementsystem.domain.task.Task;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
@@ -37,5 +38,8 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
     private List<Task> tasks;
 
-    //test something
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false,referencedColumnName = "id")
+    private User user;
+
 }
