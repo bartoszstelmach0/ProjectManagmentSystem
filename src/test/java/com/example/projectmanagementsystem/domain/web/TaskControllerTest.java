@@ -1,5 +1,6 @@
 package com.example.projectmanagementsystem.domain.web;
 
+import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
 import com.example.projectmanagementsystem.domain.project.dto.ProjectDTO;
 import com.example.projectmanagementsystem.domain.task.TaskService;
 import com.example.projectmanagementsystem.domain.task.dto.TaskDto;
@@ -44,12 +45,14 @@ class TaskControllerTest {
     @Test
     void shouldReturnAllProjects() throws Exception {
         //given
+        CommentDto commentDto = new CommentDto();
         TaskDto taskDto = TaskDto.builder()
                 .id(1L)
                 .name("Test name")
                 .description("Test description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(taskService.getAllTasks()).thenReturn(Collections.singletonList(taskDto));
@@ -63,7 +66,8 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$[0].name", is(taskDto.getName())))
                 .andExpect(jsonPath("$[0].description", is(taskDto.getDescription())))
                 .andExpect(jsonPath("$[0].deadline", is(taskDto.getDeadline().format(DateTimeFormatter.ISO_DATE_TIME))))
-                .andExpect(jsonPath("$[0].status", is(taskDto.getStatus())));
+                .andExpect(jsonPath("$[0].status", is(taskDto.getStatus())))
+                .andExpect(jsonPath("$[0].comments",hasSize(1)));
     }
 
     @Test
@@ -81,12 +85,14 @@ class TaskControllerTest {
     void shouldReturnProjectById() throws Exception {
         //given
         Long projectId = 1L;
+        CommentDto commentDto = new CommentDto();
         TaskDto taskDto = TaskDto.builder()
                 .id(1L)
                 .name("Test name")
                 .description("Test description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(taskService.getTaskByProjectId(projectId)).thenReturn(Collections.singletonList(taskDto));
@@ -99,7 +105,8 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$[0].name", is(taskDto.getName())))
                 .andExpect(jsonPath("$[0].description", is(taskDto.getDescription())))
                 .andExpect(jsonPath("$[0].deadline", is(taskDto.getDeadline().format(DateTimeFormatter.ISO_DATE_TIME))))
-                .andExpect(jsonPath("$[0].status", is(taskDto.getStatus())));
+                .andExpect(jsonPath("$[0].status", is(taskDto.getStatus())))
+                .andExpect(jsonPath("$[0].comments",hasSize(1)));
     }
 
     @Test
@@ -119,12 +126,15 @@ class TaskControllerTest {
     void shouldReturnTaskByStatus() throws Exception {
         //given
         String status = "TO_DO";
+        CommentDto commentDto = new CommentDto();
+
         TaskDto taskDto = TaskDto.builder()
                 .id(1L)
                 .name("Test name")
                 .description("Test description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(taskService.getTaskByStatus(status)).thenReturn(Collections.singletonList(taskDto));
@@ -138,7 +148,9 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$[0].name", is(taskDto.getName())))
                 .andExpect(jsonPath("$[0].description", is(taskDto.getDescription())))
                 .andExpect(jsonPath("$[0].deadline", is(taskDto.getDeadline().format(DateTimeFormatter.ISO_DATE_TIME))))
-                .andExpect(jsonPath("$[0].status", is(taskDto.getStatus())));
+                .andExpect(jsonPath("$[0].status", is(taskDto.getStatus())))
+                .andExpect(jsonPath("$[0].comments",hasSize(1)));
+
     }
 
     @Test
@@ -173,12 +185,15 @@ class TaskControllerTest {
     void shouldReturnTaskByIdCorrectly() throws Exception {
         //given
         Long taskId = 1L;
+        CommentDto commentDto = new CommentDto();
+
         TaskDto taskDto = TaskDto.builder()
                 .id(1L)
                 .name("Test name")
                 .description("Test description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(taskService.getTaskById(taskId)).thenReturn(Optional.of(taskDto));
@@ -190,7 +205,8 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$.name",is(taskDto.getName())))
                 .andExpect(jsonPath("$.description",is(taskDto.getDescription())))
                 .andExpect(jsonPath("$.deadline",is(taskDto.getDeadline().format(DateTimeFormatter.ISO_DATE_TIME))))
-                .andExpect(jsonPath("$.status",is(taskDto.getStatus())));
+                .andExpect(jsonPath("$.status",is(taskDto.getStatus())))
+                .andExpect(jsonPath("$.comments",hasSize(1)));
     }
 
     @Test
@@ -210,12 +226,15 @@ class TaskControllerTest {
     void shouldCreateTaskCorrectly() throws Exception {
         //given
         Long projectId = 1L;
+        CommentDto commentDto = new CommentDto();
+
         TaskDto taskDto = TaskDto.builder()
                 .id(1L)
                 .name("Test name")
                 .description("Test description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         when(taskService.createTask(any(TaskDto.class))).thenReturn(taskDto);
@@ -231,18 +250,22 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$.name",is(taskDto.getName())))
                 .andExpect(jsonPath("$.description",is(taskDto.getDescription())))
                 .andExpect(jsonPath("$.deadline",is(taskDto.getDeadline().format(DateTimeFormatter.ISO_DATE_TIME))))
-                .andExpect(jsonPath("$.status",is(taskDto.getStatus())));
+                .andExpect(jsonPath("$.status",is(taskDto.getStatus())))
+                .andExpect(jsonPath("$.comments",hasSize(1)));
     }
 
     @Test
     void shouldReturnBadRequestWhenRequiredFieldsAreMissing() throws Exception {
         //given
+        CommentDto commentDto = new CommentDto();
+
         TaskDto taskDto = TaskDto.builder()
                 .id(1L)
                 .name(null)
                 .description("Test description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
         //when + then
         mockMvc.perform(post("/task")
@@ -255,6 +278,7 @@ class TaskControllerTest {
     void shouldUpdateTaskCorrectly() throws Exception {
         //given
         Long taskId = 1L;
+        CommentDto commentDto = new CommentDto();
 
         String patchContent = """
                 {
@@ -269,6 +293,7 @@ class TaskControllerTest {
                 .description("Test description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         TaskDto updatedTaskDto = TaskDto.builder()
@@ -277,6 +302,7 @@ class TaskControllerTest {
                 .description("Update description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(taskService.getTaskById(taskId)).thenReturn(Optional.of(taskDto));
@@ -293,6 +319,7 @@ class TaskControllerTest {
     @Test
     void shouldHandleEmptyPatchContent() throws Exception {
         Long taskId = 1L;
+        CommentDto commentDto = new CommentDto();
 
         String patchContent = """
                 {
@@ -306,6 +333,7 @@ class TaskControllerTest {
                 .description("Test description")
                 .deadline(LocalDateTime.now().plusHours(1))
                 .status("TO_DO")
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(taskService.getTaskById(taskId)).thenReturn(Optional.of(taskDto));

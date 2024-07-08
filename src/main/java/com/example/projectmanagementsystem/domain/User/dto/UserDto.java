@@ -1,5 +1,6 @@
 package com.example.projectmanagementsystem.domain.User.dto;
 
+import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,5 +31,6 @@ public class UserDto {
     private Set<String> roles;
     private List<String> projectNames = new ArrayList<>();
     private List<String> taskNames = new ArrayList<>();
+    private List<CommentDto> comments = new ArrayList<>();
 
 }

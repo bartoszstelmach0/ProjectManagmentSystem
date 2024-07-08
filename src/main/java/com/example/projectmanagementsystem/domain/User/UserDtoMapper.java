@@ -1,5 +1,6 @@
 package com.example.projectmanagementsystem.domain.User;
 
+import com.example.projectmanagementsystem.domain.Comment.CommentDtoMapper;
 import com.example.projectmanagementsystem.domain.Role.Role;
 import com.example.projectmanagementsystem.domain.Role.RoleRepository;
 import com.example.projectmanagementsystem.domain.User.dto.UserDto;
@@ -9,8 +10,6 @@ import com.example.projectmanagementsystem.domain.task.Task;
 import com.example.projectmanagementsystem.domain.task.TaskRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,11 +18,13 @@ public class UserDtoMapper {
     private final RoleRepository roleRepository;
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
+    private final CommentDtoMapper commentDtoMapper;
 
-    public UserDtoMapper(RoleRepository roleRepository, ProjectRepository projectRepository, TaskRepository taskRepository) {
+    public UserDtoMapper(RoleRepository roleRepository, ProjectRepository projectRepository, TaskRepository taskRepository, CommentDtoMapper commentDtoMapper) {
         this.roleRepository = roleRepository;
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
+        this.commentDtoMapper = commentDtoMapper;
     }
 
     public UserDto map (User user){
@@ -35,6 +36,7 @@ public class UserDtoMapper {
                 .roles(user.getRoles().stream().map(role -> role.getName().name()).collect(Collectors.toSet()))
                 .projectNames(user.getProjects().stream().map(Project::getName).collect(Collectors.toList()))
                 .taskNames(user.getTasks().stream().map(Task::getName).collect(Collectors.toList()))
+                .comments(user.getComments().stream().map(commentDtoMapper::map).collect(Collectors.toList()))
                 .build();
     }
     
@@ -53,6 +55,7 @@ public class UserDtoMapper {
                         .collect(Collectors.toList()))
                 .tasks(dto.getTaskNames().stream().map(task -> taskRepository.findByName(task).orElseThrow(()-> new RuntimeException("Task not found")))
                         .collect(Collectors.toList()))
+                .comments(dto.getComments().stream().map(commentDtoMapper::map).collect(Collectors.toList()))
                 .build();
     }
 }

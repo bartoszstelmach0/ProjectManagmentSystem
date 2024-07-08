@@ -1,5 +1,6 @@
 package com.example.projectmanagementsystem.domain.User;
 
+import com.example.projectmanagementsystem.domain.Comment.Comment;
 import com.example.projectmanagementsystem.domain.Role.Role;
 import com.example.projectmanagementsystem.domain.project.Project;
 import com.example.projectmanagementsystem.domain.task.Task;
@@ -43,8 +44,10 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
-    private List<Project> projects = new ArrayList<>();
+    private List<Project> projects;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<Task> tasks = new ArrayList<>();
+    private List<Task> tasks;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 }

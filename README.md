@@ -29,3 +29,36 @@
 •	Ocena osiągnięć w stosunku do założonych celów
 •	Potencjalne obszary do dalszego rozwoju
   Bibliografia
+
+
+// {
+//     "username": "banjomonster",
+//     "email": "banjomonster@example.com",
+//     "password": "password123",
+//     "roles": ["ROLE_USER"]
+// }
+
+// {
+//     "name": "Project A",
+//     "description": "Description of Project A",
+//     "startDate": "2025-07-01T00:00:00",
+//     "endDate": "2027-12-31T00:00:00",
+//     "userId": 1
+// }
+// {
+//     "name": "Task 1",
+//     "description": "Description of Task 1",
+//     "deadline": "2025-07-01T00:00:00",
+//     "status": "TO_DO",
+//     "projectId": 1,
+//     "userId": 1
+// }
+
+// {
+//     "comment": "This is a test comment",
+//     "userId": 1,
+//     "projectId": 1,
+//     "taskId": 1,
+//     "createdAt": "2024-07-01T00:00:00"
+// }
+

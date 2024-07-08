@@ -1,5 +1,6 @@
 package com.example.projectmanagementsystem.domain.task;
 
+import com.example.projectmanagementsystem.domain.Comment.Comment;
 import com.example.projectmanagementsystem.domain.User.User;
 import com.example.projectmanagementsystem.domain.project.Project;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -41,6 +43,8 @@ public class Task {
     @JoinColumn(name = "user_id",nullable = false,referencedColumnName = "id")
     private User user;
 
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
     public enum TaskStatus{
         TO_DO,
         IN_PROGRESS,

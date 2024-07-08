@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+
+        <changeSet id="0005-1" author="Bartosz Stelmach">
+            <createTable tableName="comments">
+                <column name="id" type="BIGINT" autoIncrement="true">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="comment" type="VARCHAR(600)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="user_id" type="BIGINT">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="project_id" type="BIGINT"/>
+                <column name="task_id" type="BIGINT"/>
+                <column name="created_at" type="TIMESTAMP">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+            
+            
+            <addForeignKeyConstraint baseTableName="comments" baseColumnNames="user_id" constraintName="fk_comment_user"
+                                     referencedTableName="users"
+                                     referencedColumnNames="id"/>
+            <addForeignKeyConstraint baseTableName="comments" baseColumnNames="project_id"
+                                     constraintName="fk_comments_project"
+                                     referencedTableName="project"
+                                     referencedColumnNames="id"/>
+            <addForeignKeyConstraint baseTableName="comments" baseColumnNames="task_id" constraintName="fk_comment_task"
+                                     referencedTableName="tasks"
+                                     referencedColumnNames="id"/>
+        </changeSet>
+
+
+
+
+
+</databaseChangeLog>

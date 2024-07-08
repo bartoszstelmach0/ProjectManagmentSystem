@@ -1,5 +1,6 @@
 package com.example.projectmanagementsystem.domain.web;
 
+import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
 import com.example.projectmanagementsystem.domain.User.UserService;
 import com.example.projectmanagementsystem.domain.User.dto.UserDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,6 +43,8 @@ class UserControllerTest {
     @Test
     void shouldReturnAllUsers() throws Exception {
         //given
+        CommentDto commentDto = new CommentDto();
+
         UserDto dto = UserDto.builder()
                 .id(1L)
                 .username("username")
@@ -50,6 +53,7 @@ class UserControllerTest {
                 .roles(Set.of("ROLE_ADMIN"))
                 .projectNames(List.of("exmaple project"))
                 .taskNames(List.of("example task"))
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(userService.getAllUsers()).thenReturn(Collections.singletonList(dto));
@@ -63,7 +67,8 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[0].password",is(dto.getPassword())))
                 .andExpect(jsonPath("$[0].roles",hasItem("ROLE_ADMIN")))
                 .andExpect(jsonPath("$[0].projectNames",is(dto.getProjectNames())))
-                .andExpect(jsonPath("$[0].taskNames",is(dto.getTaskNames())));
+                .andExpect(jsonPath("$[0].taskNames",is(dto.getTaskNames())))
+                .andExpect(jsonPath("$[0].comments",hasSize(1)));
     }
 
     @Test
@@ -79,7 +84,9 @@ class UserControllerTest {
     @Test
     void shouldReturnUserById() throws Exception {
         //given
+        CommentDto commentDto = new CommentDto();
         Long userId = 1L;
+
         UserDto dto = UserDto.builder()
                 .id(1L)
                 .username("username")
@@ -88,6 +95,7 @@ class UserControllerTest {
                 .roles(Set.of("ROLE_ADMIN"))
                 .projectNames(List.of("exmaple project"))
                 .taskNames(List.of("example task"))
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(userService.findUserById(userId)).thenReturn(Optional.of(dto));
@@ -101,7 +109,8 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.password",is(dto.getPassword())))
                 .andExpect(jsonPath("$.roles",hasItem("ROLE_ADMIN")))
                 .andExpect(jsonPath("$.projectNames",is(dto.getProjectNames())))
-                .andExpect(jsonPath("$.taskNames",is(dto.getTaskNames())));
+                .andExpect(jsonPath("$.taskNames",is(dto.getTaskNames())))
+                .andExpect(jsonPath("$.comments",hasSize(1)));
     }
 
     @Test
@@ -118,6 +127,8 @@ class UserControllerTest {
     @Test
     void shouldCreateUserCorrectly() throws Exception {
         //given
+        CommentDto commentDto = new CommentDto();
+
         UserDto dto = UserDto.builder()
                 .id(1L)
                 .username("username")
@@ -126,6 +137,7 @@ class UserControllerTest {
                 .roles(Set.of("ROLE_ADMIN"))
                 .projectNames(List.of("exmaple project"))
                 .taskNames(List.of("example task"))
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(userService.createUser(any(UserDto.class))).thenReturn(dto);
@@ -140,11 +152,14 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.password",is(dto.getPassword())))
                 .andExpect(jsonPath("$.roles",hasItem("ROLE_ADMIN")))
                 .andExpect(jsonPath("$.projectNames",is(dto.getProjectNames())))
-                .andExpect(jsonPath("$.taskNames",is(dto.getTaskNames())));
+                .andExpect(jsonPath("$.taskNames",is(dto.getTaskNames())))
+                .andExpect(jsonPath("$.comments",hasSize(1)));
     }
     @Test
     void shouldReturnBadRequestWhenRequiredFieldsAreMissing() throws Exception {
         //given
+        CommentDto commentDto = new CommentDto();
+
         UserDto dto = UserDto.builder()
                 .id(1L)
                 .username("username")
@@ -153,6 +168,7 @@ class UserControllerTest {
                 .roles(Set.of("ROLE_ADMIN"))
                 .projectNames(List.of("exmaple project"))
                 .taskNames(List.of("example task"))
+                .comments(Collections.singletonList(commentDto))
                 .build();
         //when + then
         mockMvc.perform(post("/users")
@@ -177,6 +193,8 @@ class UserControllerTest {
     void shouldUpdateUserCorrectly() throws Exception {
         //given
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
+
 
         String patchContent = """
                 {
@@ -191,6 +209,7 @@ class UserControllerTest {
                 .roles(Set.of("ROLE_ADMIN"))
                 .projectNames(List.of("exmaple project"))
                 .taskNames(List.of("example task"))
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         UserDto updatedDto = UserDto.builder()
@@ -201,6 +220,7 @@ class UserControllerTest {
                 .roles(Set.of("ROLE_ADMIN"))
                 .projectNames(List.of("exmaple project"))
                 .taskNames(List.of("example task"))
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(userService.findUserById(userId)).thenReturn(Optional.of(originalDto));
@@ -217,6 +237,8 @@ class UserControllerTest {
     void shouldHandleEmptyPatchContent() throws Exception {
         //given
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
+
         String patchContent = """
                 {
                    
@@ -230,6 +252,7 @@ class UserControllerTest {
                 .roles(Set.of("ROLE_ADMIN"))
                 .projectNames(List.of("exmaple project"))
                 .taskNames(List.of("example task"))
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(userService.findUserById(userId)).thenReturn(Optional.of(originalDto));
