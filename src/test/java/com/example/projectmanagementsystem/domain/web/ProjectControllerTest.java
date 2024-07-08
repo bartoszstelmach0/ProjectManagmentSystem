@@ -1,8 +1,10 @@
 package com.example.projectmanagementsystem.domain.web;
 
+import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
 import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.ProjectService;
 import com.example.projectmanagementsystem.domain.project.dto.ProjectDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.github.fge.jsonpatch.JsonPatchException;
@@ -54,6 +56,7 @@ class ProjectControllerTest {
     void shouldReturnAllProjects() throws Exception {
         //given
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
         ProjectDTO projectDto = ProjectDTO.builder()
                 .id(1L)
                 .name("Test Project")
@@ -62,6 +65,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusHours(1))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
         Mockito.when(projectService.getAllProjects()).thenReturn(Collections.singletonList(projectDto));
         //when + then
@@ -90,6 +94,7 @@ class ProjectControllerTest {
         //given
         Long id = 1L;
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
         ProjectDTO projectDto = ProjectDTO.builder()
                 .id(1L)
                 .name("Test Project")
@@ -98,6 +103,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusHours(1))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
         Mockito.when(projectService.getProjectById(id)).thenReturn(Optional.of(projectDto));
         //when + then
@@ -125,6 +131,7 @@ class ProjectControllerTest {
     void shouldCreateTestCorrectly() throws Exception {
         //given
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
         ProjectDTO projectDto = ProjectDTO.builder()
                 .id(1L)
                 .name("Test Project")
@@ -133,6 +140,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusHours(1))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(projectService.createNewProject(Mockito.any(ProjectDTO.class))).thenReturn(projectDto);
@@ -149,9 +157,23 @@ class ProjectControllerTest {
     }
 
     @Test
+    void shouldCorrectlyHandleCatchInCreatingProject() throws Exception {
+        //given
+        ProjectDTO projectDTO = new ProjectDTO();
+
+        Mockito.when(projectService.createNewProject(any(ProjectDTO.class))).thenThrow(new IllegalArgumentException());
+        //when + then
+        mockMvc.perform(post("/project")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(projectDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldReturnBadRequestWhenRequiredFieldsAreMissing() throws Exception {
         //given
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
         ProjectDTO projectDto = ProjectDTO.builder()
                 .id(1L)
                 .name(null)
@@ -160,6 +182,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusHours(1))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
         //when + then
         mockMvc.perform(post("/project")
@@ -173,6 +196,7 @@ class ProjectControllerTest {
         //given
         Long projectId = 1L;
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
 
         String patchContent = """
                 {
@@ -188,6 +212,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusDays(10))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         ProjectDTO updatedProject = ProjectDTO.builder()
@@ -198,6 +223,7 @@ class ProjectControllerTest {
                 .endDate(originalProject.getEndDate())
                 .tasks(originalProject.getTasks())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(projectService.getProjectById(projectId)).thenReturn(Optional.of(originalProject));
@@ -216,6 +242,7 @@ class ProjectControllerTest {
         //given
         Long projectId = 1L;
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
 
         String patchContent = """
                 {
@@ -230,6 +257,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusDays(10))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(projectService.getProjectById(projectId)).thenReturn(Optional.of(originalProject));
@@ -267,6 +295,8 @@ class ProjectControllerTest {
         String name = "Test";
         Long projectId = 1L;
 
+        CommentDto commentDto = new CommentDto();
+
         Long userId = 1L;
         ProjectDTO originalProject = ProjectDTO.builder()
                 .id(projectId)
@@ -276,6 +306,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusDays(10))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(projectService.getProjectsByNameContaining(name)).thenReturn(Collections.singletonList(originalProject));
@@ -321,6 +352,7 @@ class ProjectControllerTest {
         Long userId = 1L;
         LocalDateTime startDate = LocalDateTime.now().plusHours(1);
         LocalDateTime endDate = LocalDateTime.now().plusHours(3);
+        CommentDto commentDto = new CommentDto();
 
         ProjectDTO originalProject = ProjectDTO.builder()
                 .id(projectId)
@@ -330,6 +362,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusDays(10))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(projectService.getProjectByStartDateBetween(startDate,endDate)).thenReturn(Collections.singletonList(originalProject));
@@ -353,6 +386,8 @@ class ProjectControllerTest {
         LocalDateTime startDate = LocalDateTime.now().plusHours(3);
         LocalDateTime endDate = LocalDateTime.now().plusHours(1);
 
+        CommentDto commentDto = new CommentDto();
+
         Long userId = 1L;
         ProjectDTO originalProject = ProjectDTO.builder()
                 .id(projectId)
@@ -362,6 +397,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusDays(10))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(projectService.getProjectByStartDateBetween(startDate,endDate)).thenThrow(new IllegalArgumentException("Start date cannot be after end date"));
@@ -381,6 +417,7 @@ class ProjectControllerTest {
         LocalDateTime startDate = LocalDateTime.now().plusHours(1);
         LocalDateTime endDate = LocalDateTime.now().plusHours(3);
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
 
         ProjectDTO originalProject = ProjectDTO.builder()
                 .id(projectId)
@@ -390,6 +427,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusDays(10))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(projectService.getProjectByEndDateBetween(startDate,endDate)).thenReturn(Collections.singletonList(originalProject));
@@ -412,6 +450,7 @@ class ProjectControllerTest {
         LocalDateTime startDate = LocalDateTime.now().plusHours(3);
         LocalDateTime endDate = LocalDateTime.now().plusHours(1);
         Long userId = 1L;
+        CommentDto commentDto = new CommentDto();
 
         ProjectDTO originalProject = ProjectDTO.builder()
                 .id(projectId)
@@ -421,6 +460,7 @@ class ProjectControllerTest {
                 .endDate(LocalDateTime.now().plusDays(10))
                 .tasks(Collections.emptyList())
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(projectService.getProjectByEndDateBetween(startDate,endDate)).thenThrow(new IllegalArgumentException("Start date cannot be after end date"));

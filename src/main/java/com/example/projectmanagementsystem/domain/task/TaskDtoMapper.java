@@ -1,6 +1,7 @@
 package com.example.projectmanagementsystem.domain.task;
 
 
+import com.example.projectmanagementsystem.domain.Comment.CommentDtoMapper;
 import com.example.projectmanagementsystem.domain.User.User;
 import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.Project;
@@ -8,15 +9,19 @@ import com.example.projectmanagementsystem.domain.project.ProjectRepository;
 import com.example.projectmanagementsystem.domain.task.dto.TaskDto;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 public class TaskDtoMapper {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final CommentDtoMapper commentDtoMapper;
 
-    public TaskDtoMapper(ProjectRepository projectRepository, UserRepository userRepository) {
+    public TaskDtoMapper(ProjectRepository projectRepository, UserRepository userRepository, CommentDtoMapper commentDtoMapper) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.commentDtoMapper = commentDtoMapper;
     }
 
     public TaskDto map (Task task){
@@ -28,6 +33,7 @@ public class TaskDtoMapper {
                 .status(task.getStatus().toString())
                 .projectId(task.getProject().getId())
                 .userId(task.getUser().getId())
+                .comments(task.getComments().stream().map(commentDtoMapper::map).collect(Collectors.toList()))
                 .build();
     }
 
@@ -43,6 +49,7 @@ public class TaskDtoMapper {
                 .status(status)
                 .project(project)
                 .user(user)
+                .comments(dto.getComments().stream().map(commentDtoMapper::map).collect(Collectors.toList()))
                 .build();
     }
 }

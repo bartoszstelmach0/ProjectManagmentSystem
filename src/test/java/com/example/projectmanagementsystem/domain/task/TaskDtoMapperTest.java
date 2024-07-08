@@ -1,5 +1,8 @@
 package com.example.projectmanagementsystem.domain.task;
 
+import com.example.projectmanagementsystem.domain.Comment.Comment;
+import com.example.projectmanagementsystem.domain.Comment.CommentDtoMapper;
+import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
 import com.example.projectmanagementsystem.domain.User.User;
 import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.Project;
@@ -12,6 +15,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,11 +28,13 @@ class TaskDtoMapperTest {
     private ProjectRepository projectRepository;
 
     @Mock
+    CommentDtoMapper commentDtoMapper;
+    @Mock
     UserRepository userRepository;
     @BeforeEach
     public void init(){
         MockitoAnnotations.openMocks(this);
-        taskDtoMapper = new TaskDtoMapper(projectRepository, userRepository);
+        taskDtoMapper = new TaskDtoMapper(projectRepository, userRepository, commentDtoMapper);
     }
 
     @Test
@@ -35,6 +42,8 @@ class TaskDtoMapperTest {
         // given
         Project project = new Project();
         project.setId(1L);
+        Comment comment = new Comment();
+        CommentDto commentDto = new CommentDto();
 
         User user = new User();
         user.setId(1L);
@@ -47,7 +56,10 @@ class TaskDtoMapperTest {
                 .status(Task.TaskStatus.TO_DO)
                 .project(project)
                 .user(user)
+                .comments(Collections.singletonList(comment))
                 .build();
+
+        Mockito.when(commentDtoMapper.map(comment)).thenReturn(commentDto);
         //  when
         TaskDto taskDto = taskDtoMapper.map(task);
         //then
@@ -59,12 +71,16 @@ class TaskDtoMapperTest {
         assertEquals(task.getStatus().toString(),taskDto.getStatus());
         assertEquals(task.getProject().getId(),taskDto.getProjectId());
         assertEquals(task.getUser().getId(),taskDto.getUserId());
+        assertEquals(taskDto.getComments().get(0),commentDto);
     }
     @Test
     public void shouldCorrectlyMapToEntity(){
         //given
         Long projectId = 1L;
         Long userId = 1L;
+
+        CommentDto commentDto = new CommentDto();
+        Comment comment = new Comment();
 
         TaskDto taskDto = TaskDto.builder()
                 .id(1L)
@@ -74,6 +90,7 @@ class TaskDtoMapperTest {
                 .status("TO_DO")
                 .projectId(projectId)
                 .userId(userId)
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Project project = new Project();
@@ -83,6 +100,7 @@ class TaskDtoMapperTest {
         user.setId(userId);
         Mockito.when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        Mockito.when(commentDtoMapper.map(commentDto)).thenReturn(comment);
         //when
         Task task = taskDtoMapper.map(taskDto);
         //then
@@ -93,5 +111,6 @@ class TaskDtoMapperTest {
         assertEquals(Task.TaskStatus.TO_DO,task.getStatus());
         assertEquals(project,task.getProject());
         assertEquals(user,task.getUser());
+        assertEquals(task.getComments().get(0),comment);
     }
 }

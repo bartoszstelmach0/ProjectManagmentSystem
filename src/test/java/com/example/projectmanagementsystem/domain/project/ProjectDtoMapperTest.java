@@ -1,5 +1,8 @@
 package com.example.projectmanagementsystem.domain.project;
 
+import com.example.projectmanagementsystem.domain.Comment.Comment;
+import com.example.projectmanagementsystem.domain.Comment.CommentDtoMapper;
+import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
 import com.example.projectmanagementsystem.domain.User.User;
 import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.dto.ProjectDTO;
@@ -26,10 +29,12 @@ class ProjectDtoMapperTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    CommentDtoMapper commentDtoMapper;
     @BeforeEach
     public void init(){
         MockitoAnnotations.openMocks(this);
-        projectDtoMapper = new ProjectDtoMapper(taskDtoMapper, userRepository);
+        projectDtoMapper = new ProjectDtoMapper(taskDtoMapper, userRepository, commentDtoMapper);
     }
 
     @Test
@@ -38,6 +43,8 @@ class ProjectDtoMapperTest {
         Task task = new Task();
         User user = new User();
         TaskDto taskDto = new TaskDto();
+        Comment comment = new Comment();
+        CommentDto commentDto = new CommentDto();
         Project project = Project.builder()
                 .id(1L)
                 .name("Test name")
@@ -46,9 +53,11 @@ class ProjectDtoMapperTest {
                 .endDate(LocalDateTime.now().plusHours(3))
                 .tasks(Collections.singletonList(task))
                 .user(user)
+                .comments(Collections.singletonList(comment))
                 .build();
 
         Mockito.when(taskDtoMapper.map(task)).thenReturn(taskDto);
+        Mockito.when(commentDtoMapper.map(comment)).thenReturn(commentDto);
         //when
         ProjectDTO projectDTO = projectDtoMapper.map(project);
         //then
@@ -59,6 +68,7 @@ class ProjectDtoMapperTest {
         assertEquals(project.getEndDate(),projectDTO.getEndDate());
         assertEquals(taskDto, projectDTO.getTasks().get(0));
         assertEquals(projectDTO.getUserId(),project.getUser().getId());
+        assertEquals(commentDto,projectDTO.getComments().get(0));
     }
 
     @Test
@@ -67,6 +77,8 @@ class ProjectDtoMapperTest {
         TaskDto taskdto = new TaskDto();
         Task task = new Task();
         User user = new User();
+        CommentDto commentDto = new CommentDto();
+        Comment comment = new Comment();
         user.setId(1L);
         ProjectDTO projectDto = ProjectDTO.builder()
                 .id(1L)
@@ -76,10 +88,12 @@ class ProjectDtoMapperTest {
                 .endDate(LocalDateTime.now().plusHours(3))
                 .tasks(Collections.singletonList(taskdto))
                 .userId(user.getId())
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(taskDtoMapper.map(taskdto)).thenReturn(task);
         Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(commentDtoMapper.map(commentDto)).thenReturn(comment);
         //when
         Project result = projectDtoMapper.map(projectDto);
         //then
@@ -91,6 +105,6 @@ class ProjectDtoMapperTest {
         assertEquals(projectDto.getEndDate(),result.getEndDate());
         assertEquals(result.getTasks().get(0),task);
         assertEquals(result.getUser(),user);
+        assertEquals(comment,result.getComments().get(0));
     }
-
 }

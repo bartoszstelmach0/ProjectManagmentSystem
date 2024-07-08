@@ -1,5 +1,8 @@
 package com.example.projectmanagementsystem.domain.User;
 
+import com.example.projectmanagementsystem.domain.Comment.Comment;
+import com.example.projectmanagementsystem.domain.Comment.CommentDtoMapper;
+import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
 import com.example.projectmanagementsystem.domain.Role.Role;
 import com.example.projectmanagementsystem.domain.Role.RoleRepository;
 import com.example.projectmanagementsystem.domain.User.dto.UserDto;
@@ -25,13 +28,15 @@ class UserDtoMapperTest {
     ProjectRepository projectRepository;
     @Mock
     TaskRepository taskRepository;
+    @Mock
+    CommentDtoMapper commentDtoMapper;
 
     private UserDtoMapper userDtoMapper;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        userDtoMapper = new UserDtoMapper(roleRepository, projectRepository, taskRepository);
+        userDtoMapper = new UserDtoMapper(roleRepository, projectRepository, taskRepository, commentDtoMapper);
     }
 
     @Test
@@ -46,6 +51,9 @@ class UserDtoMapperTest {
         Task task = new Task();
         task.setName("example Task");
 
+        Comment comment = new Comment();
+        CommentDto commentDto = new CommentDto();
+
         User user = User.builder()
                 .id(1L)
                 .username("username")
@@ -54,7 +62,10 @@ class UserDtoMapperTest {
                 .roles(Set.of(role))
                 .projects(List.of(project))
                 .tasks(List.of(task))
+                .comments(Collections.singletonList(comment))
                 .build();
+
+        Mockito.when(commentDtoMapper.map(comment)).thenReturn(commentDto);
 
         //when
         UserDto result = userDtoMapper.map(user);
@@ -83,6 +94,9 @@ class UserDtoMapperTest {
         Task task = new Task();
         task.setName(taskNames);
 
+        Comment comment = new Comment();
+        CommentDto commentDto = new CommentDto();
+
         UserDto dto = UserDto.builder()
                 .id(1L)
                 .username("username")
@@ -91,11 +105,13 @@ class UserDtoMapperTest {
                 .roles(Set.of(role))
                 .projectNames(List.of(projectName))
                 .taskNames(List.of(taskNames))
+                .comments(Collections.singletonList(commentDto))
                 .build();
 
         Mockito.when(roleRepository.findByName(Role.RoleName.ROLE_ADMIN)).thenReturn(Optional.of(roleEntity));
         Mockito.when(projectRepository.findByNameContainingIgnoreCase(projectName)).thenReturn(Collections.singletonList(project));
         Mockito.when(taskRepository.findByName(taskNames)).thenReturn(Optional.of(task));
+        Mockito.when(commentDtoMapper.map(commentDto)).thenReturn(comment);
         //when
         User result = userDtoMapper.map(dto);
         //then
@@ -106,6 +122,7 @@ class UserDtoMapperTest {
         assertEquals(result.getRoles(),Set.of(roleEntity));
         assertEquals(result.getProjects(),List.of(project));
         assertEquals(result.getTasks(),List.of(task));
+        assertEquals(result.getComments().get(0),comment);
 
 
     }
