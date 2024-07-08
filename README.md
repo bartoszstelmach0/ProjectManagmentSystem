@@ -38,6 +38,7 @@
 //     "roles": ["ROLE_USER"]
 // }
 
+
 // {
 //     "name": "Project A",
 //     "description": "Description of Project A",
@@ -45,6 +46,7 @@
 //     "endDate": "2027-12-31T00:00:00",
 //     "userId": 1
 // }
+
 // {
 //     "name": "Task 1",
 //     "description": "Description of Task 1",
@@ -59,6 +61,5 @@
 //     "userId": 1,
 //     "projectId": 1,
 //     "taskId": 1,
-//     "createdAt": "2024-07-01T00:00:00"
 // }
 
