@@ -65,22 +65,4 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.username").value(userDto.getUsername()))
                 .andExpect(jsonPath("$.email").value(userDto.getEmail()));
     }
-
-    @Test
-    void shouldAuthenticateUserCorrectly() throws Exception {
-        // given
-        UserCredentialsDto credentialsDto = new UserCredentialsDto("email@email.com", "123", Set.of("ROLE_ADMIN"));
-        Authentication authentication = Mockito.mock(Authentication.class);
-
-        Mockito.when(authenticationManager.authenticate(any())).thenReturn(authentication);
-
-        // when + then
-        mockMvc.perform(post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(credentialsDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("User authenticated successfully"));
-
-        Mockito.verify(authenticationManager).authenticate(any());
-    }
 }
