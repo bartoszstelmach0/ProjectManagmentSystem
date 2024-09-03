@@ -5,6 +5,7 @@ import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.Project;
 import com.example.projectmanagementsystem.domain.project.ProjectRepository;
 import com.example.projectmanagementsystem.domain.task.dto.TaskDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,19 +13,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskDtoMapper mapper;
-    private ProjectRepository projectRepository;
-    private UserRepository userRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public TaskService(TaskRepository taskRepository, TaskDtoMapper mapper, ProjectRepository projectRepository, UserRepository userRepository) {
-        this.taskRepository = taskRepository;
-        this.mapper = mapper;
-        this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
-    }
+
 
     public List<TaskDto> getAllTasks(){
         return taskRepository.findAll().stream()

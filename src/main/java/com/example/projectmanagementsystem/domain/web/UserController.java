@@ -44,15 +44,6 @@ public class UserController {
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<UserDto> createUser (@RequestBody @Valid UserDto userDto){
-        UserDto savedUser = userService.createUser(userDto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedUser.getId()).toUri();
-        return ResponseEntity.created(uri).body(savedUser);
-    }
-
     @PatchMapping ("/{id}")
     public ResponseEntity<?> updateUser (@PathVariable Long id, @RequestBody JsonMergePatch patch){
         try{

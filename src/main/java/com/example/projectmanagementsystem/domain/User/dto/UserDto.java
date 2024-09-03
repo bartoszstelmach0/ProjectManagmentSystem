@@ -1,6 +1,7 @@
 package com.example.projectmanagementsystem.domain.User.dto;
 
 import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
+import com.example.projectmanagementsystem.domain.Role.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Builder
 @Data
@@ -32,5 +34,4 @@ public class UserDto {
     private List<String> projectNames = new ArrayList<>();
     private List<String> taskNames = new ArrayList<>();
     private List<CommentDto> comments = new ArrayList<>();
-
 }

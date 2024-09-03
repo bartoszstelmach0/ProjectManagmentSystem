@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,13 +38,13 @@ public class Project {
     private LocalDateTime endDate;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false,referencedColumnName = "id")
     private User user;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
 }

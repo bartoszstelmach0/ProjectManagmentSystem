@@ -14,9 +14,13 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -39,7 +43,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ProjectController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("dev")
 class ProjectControllerTest {
 
     @Autowired
@@ -53,6 +59,7 @@ class ProjectControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnAllProjects() throws Exception {
         //given
         Long userId = 1L;
@@ -67,7 +74,9 @@ class ProjectControllerTest {
                 .userId(userId)
                 .comments(Collections.singletonList(commentDto))
                 .build();
+
         Mockito.when(projectService.getAllProjects()).thenReturn(Collections.singletonList(projectDto));
+
         //when + then
         mockMvc.perform(get("/project")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -79,6 +88,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldReturnEmptyListWhenNoProjects() throws Exception {
         //given
         Mockito.when(projectService.getAllProjects()).thenReturn(Collections.emptyList());
@@ -90,6 +100,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldReturnProjectById() throws Exception {
         //given
         Long id = 1L;
@@ -118,6 +129,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldReturnEmptyOptionalWhenProjectIsEmpty() throws Exception {
         //given
         Long id = 1L;
@@ -128,6 +140,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldCreateTestCorrectly() throws Exception {
         //given
         Long userId = 1L;
@@ -157,6 +170,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldCorrectlyHandleCatchInCreatingProject() throws Exception {
         //given
         ProjectDTO projectDTO = new ProjectDTO();
@@ -170,6 +184,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnBadRequestWhenRequiredFieldsAreMissing() throws Exception {
         //given
         Long userId = 1L;
@@ -192,6 +207,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldPartiallyUpdateProject() throws Exception {
         //given
         Long projectId = 1L;
@@ -238,6 +254,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldHandleEmptyPatchContent() throws Exception {
         //given
         Long projectId = 1L;
@@ -277,6 +294,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldDeleteProjectSuccessfully() throws Exception {
         Long projectId = 1L;
 
@@ -289,6 +307,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldGetProjectByNameContainingCorrectly() throws Exception {
         //given
 
@@ -324,6 +343,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldReturnBadRequestForNullArgument() throws Exception {
         String name = null;
 
@@ -335,6 +355,7 @@ class ProjectControllerTest {
                 .andExpect(status().isBadRequest());
     }
     @Test
+    @WithMockUser(roles = "USER")
     void shouldReturnBadRequestForMissingName() throws Exception {
         String name = "";
         Mockito.when(projectService.getProjectsByNameContaining(name)).thenThrow(new IllegalArgumentException("Name cannot be null!"));
@@ -346,6 +367,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldReturnProjectByStartDateBetween() throws Exception {
         //given
         Long projectId = 1L;
@@ -380,6 +402,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldThrowExceptionBecauseOfEndDateIsEarlierThanStartDate() throws Exception {
         //given
         Long projectId = 1L;
@@ -411,6 +434,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void shouldReturnProjectByEndDateBetween() throws Exception {
         //given
         Long projectId = 1L;
@@ -444,6 +468,7 @@ class ProjectControllerTest {
                 .andExpect(jsonPath("$[0].endDate").exists());
     }
     @Test
+    @WithMockUser(roles = "USER")
     void shouldThrowExceptionBecauseOfEndDateIsEarlierThanStartDateInEndingDate() throws Exception {
         //given
         Long projectId = 1L;

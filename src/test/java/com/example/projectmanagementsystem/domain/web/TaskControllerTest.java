@@ -10,9 +10,13 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -31,7 +35,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(TaskController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("dev")
 class TaskControllerTest {
 
     @Autowired
@@ -43,6 +49,7 @@ class TaskControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnAllProjects() throws Exception {
         //given
         CommentDto commentDto = new CommentDto();
@@ -71,6 +78,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnEmptyListWithNoProjects() throws Exception {
         //given
         Mockito.when(taskService.getAllTasks()).thenReturn(Collections.emptyList());
@@ -82,6 +90,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnProjectById() throws Exception {
         //given
         Long projectId = 1L;
@@ -110,6 +119,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnEmptyListBySearchingByProjectId() throws Exception {
         //given
         Long projectId = 1L;
@@ -123,6 +133,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnTaskByStatus() throws Exception {
         //given
         String status = "TO_DO";
@@ -154,6 +165,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnEmptyListWhenStatusIsEmpty() throws Exception {
         //given
         String status = "";
@@ -168,6 +180,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnEmptyListWhenStatusIsNull() throws Exception {
         //given
         String status = null;
@@ -182,6 +195,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnTaskByIdCorrectly() throws Exception {
         //given
         Long taskId = 1L;
@@ -210,6 +224,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnNotFoundForNonExistingTask() throws Exception {
         //given
         Long projectId = 1L;
@@ -223,6 +238,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldCreateTaskCorrectly() throws Exception {
         //given
         Long projectId = 1L;
@@ -255,6 +271,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnBadRequestWhenRequiredFieldsAreMissing() throws Exception {
         //given
         CommentDto commentDto = new CommentDto();
@@ -275,6 +292,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldUpdateTaskCorrectly() throws Exception {
         //given
         Long taskId = 1L;
@@ -317,6 +335,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldHandleEmptyPatchContent() throws Exception {
         Long taskId = 1L;
         CommentDto commentDto = new CommentDto();
@@ -352,6 +371,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldDeleteTaskCorrectly() throws Exception {
         //given
         Long taskId = 1L;
