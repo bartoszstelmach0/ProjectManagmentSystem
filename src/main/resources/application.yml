@@ -5,6 +5,9 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/master.xml
-
+  profiles:
+    active: dev
+jws:
+  sharedKey: ${JWS_SHARED_KEY}
 
 

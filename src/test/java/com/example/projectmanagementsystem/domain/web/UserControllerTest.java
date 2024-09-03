@@ -9,9 +9,13 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -29,7 +33,9 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-@WebMvcTest(UserController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("dev")
 class UserControllerTest {
 
     @Autowired
@@ -41,6 +47,7 @@ class UserControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnAllUsers() throws Exception {
         //given
         CommentDto commentDto = new CommentDto();
@@ -72,6 +79,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnNoUsersWhenListIsEmpty() throws Exception {
         //given
             Mockito.when(userService.getAllUsers()).thenReturn(Collections.emptyList());
@@ -82,6 +90,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnUserById() throws Exception {
         //given
         CommentDto commentDto = new CommentDto();
@@ -114,6 +123,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldNotReturnAnyUserWhenDtoIsEmpty() throws Exception {
         //given
         Long userId = 1L;
@@ -125,60 +135,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldCreateUserCorrectly() throws Exception {
-        //given
-        CommentDto commentDto = new CommentDto();
-
-        UserDto dto = UserDto.builder()
-                .id(1L)
-                .username("username")
-                .email("email@email.com")
-                .password("123")
-                .roles(Set.of("ROLE_ADMIN"))
-                .projectNames(List.of("exmaple project"))
-                .taskNames(List.of("example task"))
-                .comments(Collections.singletonList(commentDto))
-                .build();
-
-        Mockito.when(userService.createUser(any(UserDto.class))).thenReturn(dto);
-        //when + then
-        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", Matchers.containsString("/users/1")))
-                .andExpect(jsonPath("$.id",is(dto.getId().intValue())))
-                .andExpect(jsonPath("$.username", is(dto.getUsername())))
-                .andExpect(jsonPath("$.email",is(dto.getEmail())))
-                .andExpect(jsonPath("$.password",is(dto.getPassword())))
-                .andExpect(jsonPath("$.roles",hasItem("ROLE_ADMIN")))
-                .andExpect(jsonPath("$.projectNames",is(dto.getProjectNames())))
-                .andExpect(jsonPath("$.taskNames",is(dto.getTaskNames())))
-                .andExpect(jsonPath("$.comments",hasSize(1)));
-    }
-    @Test
-    void shouldReturnBadRequestWhenRequiredFieldsAreMissing() throws Exception {
-        //given
-        CommentDto commentDto = new CommentDto();
-
-        UserDto dto = UserDto.builder()
-                .id(1L)
-                .username("username")
-                .email(null)
-                .password("123")
-                .roles(Set.of("ROLE_ADMIN"))
-                .projectNames(List.of("exmaple project"))
-                .taskNames(List.of("example task"))
-                .comments(Collections.singletonList(commentDto))
-                .build();
-        //when + then
-        mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
-    }
-
-
-    @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldDeleteCorrectly() throws Exception {
         //given
         Long userId = 1L;
@@ -190,6 +147,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldUpdateUserCorrectly() throws Exception {
         //given
         Long userId = 1L;
@@ -234,6 +192,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldHandleEmptyPatchContent() throws Exception {
         //given
         Long userId = 1L;

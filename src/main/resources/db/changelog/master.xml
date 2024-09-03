@@ -9,4 +9,7 @@
     <include file="0001_create_table_project.xml" relativeToChangelogFile="true"/>
     <include file="0002_create_table_task.xml" relativeToChangelogFile="true"/>
     <include file="0005_create_table_comment.xml" relativeToChangelogFile="true"/>
+
+    <include file="../testdata/0003_users.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="../testdata/0004_role.sql" relativeToChangelogFile="true" context="dev"/>
 </databaseChangeLog>

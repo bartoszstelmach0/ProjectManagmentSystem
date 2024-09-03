@@ -1,6 +1,7 @@
 package com.example.projectmanagementsystem.domain.Comment;
 
 import com.example.projectmanagementsystem.domain.Comment.dto.CommentDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,15 +9,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentDtoMapper mapper;
-
-    public CommentService(CommentRepository commentRepository, CommentDtoMapper mapper) {
-        this.commentRepository = commentRepository;
-        this.mapper = mapper;
-    }
 
     public List<CommentDto> getAllComments(){
         return commentRepository.findAll().stream().map(mapper::map).collect(Collectors.toList());

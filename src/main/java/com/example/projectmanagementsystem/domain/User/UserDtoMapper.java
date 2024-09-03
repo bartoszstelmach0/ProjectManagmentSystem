@@ -8,24 +8,19 @@ import com.example.projectmanagementsystem.domain.project.Project;
 import com.example.projectmanagementsystem.domain.project.ProjectRepository;
 import com.example.projectmanagementsystem.domain.task.Task;
 import com.example.projectmanagementsystem.domain.task.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserDtoMapper {
 
     private final RoleRepository roleRepository;
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
     private final CommentDtoMapper commentDtoMapper;
-
-    public UserDtoMapper(RoleRepository roleRepository, ProjectRepository projectRepository, TaskRepository taskRepository, CommentDtoMapper commentDtoMapper) {
-        this.roleRepository = roleRepository;
-        this.projectRepository = projectRepository;
-        this.taskRepository = taskRepository;
-        this.commentDtoMapper = commentDtoMapper;
-    }
 
     public UserDto map (User user){
         return UserDto.builder()

@@ -3,12 +3,12 @@ package com.example.projectmanagementsystem.domain.User;
 import com.example.projectmanagementsystem.domain.Role.Role;
 import com.example.projectmanagementsystem.domain.Role.RoleRepository;
 import com.example.projectmanagementsystem.domain.User.dto.UserDto;
-import com.example.projectmanagementsystem.domain.project.dto.ProjectDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,13 +25,14 @@ class UserServiceTest {
     RoleRepository roleRepository;
     @Mock
     UserDtoMapper mapper;
-
+    @Mock
+    PasswordEncoder passwordEncoder;
     private UserService userService;
 
     @BeforeEach
     public void init (){
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(userRepository,roleRepository,mapper);
+        userService = new UserService(userRepository,roleRepository,mapper, passwordEncoder);
     }
 
     @Test
@@ -94,9 +95,11 @@ class UserServiceTest {
         UserDto givenDto = new UserDto();
         User userToSave = new User();
         User savedUser = new User();
+        Role foundRole = new Role();
         UserDto savedUserDto = new UserDto();
 
         Mockito.when(mapper.map(givenDto)).thenReturn(userToSave);
+        Mockito.when(roleRepository.findByName(Role.RoleName.ROLE_USER)).thenReturn(Optional.of(foundRole));
         Mockito.when(userRepository.save(userToSave)).thenReturn(savedUser);
         Mockito.when(mapper.map(savedUser)).thenReturn(savedUserDto);
         //when

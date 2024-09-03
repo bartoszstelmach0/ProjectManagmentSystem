@@ -3,6 +3,7 @@ package com.example.projectmanagementsystem.domain.project;
 import com.example.projectmanagementsystem.domain.User.User;
 import com.example.projectmanagementsystem.domain.User.UserRepository;
 import com.example.projectmanagementsystem.domain.project.dto.ProjectDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,20 +12,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectDtoMapper mapper;
     private final UserRepository userRepository;
 
-    public ProjectService(ProjectRepository projectRepository, ProjectDtoMapper mapper, UserRepository userRepository) {
-        this.projectRepository = projectRepository;
-        this.mapper = mapper;
-        this.userRepository = userRepository;
-    }
 
     public List<ProjectDTO> getAllProjects(){
-        return projectRepository.findAll().stream().map(mapper::map).collect(Collectors.toList());
+        return projectRepository.findAll().stream()
+                .map(mapper::map).collect(Collectors.toList());
     }
 
     public Optional<ProjectDTO> getProjectById(Long id){
