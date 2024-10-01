@@ -23,9 +23,7 @@ class RoleServiceTestIT {
     @Autowired
     private  RoleService roleService;
     @Autowired
-
     private  RoleRepository roleRepository;
-
     @Autowired
     private  RoleMapper roleMapper;
 
