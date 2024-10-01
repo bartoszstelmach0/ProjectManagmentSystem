@@ -48,7 +48,6 @@ class CommentServiceTestIT {
     PasswordEncoder passwordEncoder;
 
     private User defaultUser;
-    private Role defaultRole;
     private Project defaultProject;
     private Task defaultTask;
     private Comment defaultComment;
@@ -56,7 +55,7 @@ class CommentServiceTestIT {
 
     @BeforeEach
     public void init(){
-        defaultRole = Role.builder()
+        Role defaultRole = Role.builder()
                 .name(Role.RoleName.ROLE_USER)
                 .build();
         roleRepository.save(defaultRole);

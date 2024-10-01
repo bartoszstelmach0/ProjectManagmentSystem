@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.h2.H2ConsoleProperties;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,6 +48,7 @@ public class SecurityConfigDev {
                 .build();
     }
     @Bean
+    @Primary
     public H2ConsoleProperties h2ConsoleProperties() {
         return new H2ConsoleProperties();
     }

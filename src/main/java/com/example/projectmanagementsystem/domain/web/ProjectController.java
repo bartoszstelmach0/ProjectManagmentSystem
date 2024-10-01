@@ -11,6 +11,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,17 +24,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/project")
+@RequiredArgsConstructor
 public class ProjectController {
 
     private final ProjectService projectService;
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
-
-    public ProjectController(ProjectService projectService, ObjectMapper objectMapper, UserRepository userRepository) {
-        this.projectService = projectService;
-        this.objectMapper = objectMapper;
-        this.userRepository = userRepository;
-    }
 
 
     @GetMapping
